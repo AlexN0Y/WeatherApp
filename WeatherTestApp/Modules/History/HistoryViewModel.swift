@@ -9,14 +9,17 @@ import SwiftUI
 
 final class HistoryViewModel: ObservableObject {
     
-    @Published var catImageHistory: [CatImage] = []
+    @Published private(set) var catImageHistory: [CatImage] = []
 
     private let historyService = HistoryService()
 
     init() {
         loadCatImageHistory()
     }
+}
 
+private extension HistoryViewModel {
+    
     func loadCatImageHistory() {
         catImageHistory = historyService.fetchCatImageHistory()
     }

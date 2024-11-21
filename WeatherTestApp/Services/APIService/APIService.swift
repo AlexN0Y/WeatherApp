@@ -17,7 +17,9 @@ extension APIService {
     func searchCities(query: String) async throws -> [City] {
         let queryEncoded = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
         let urlString = "http://api.openweathermap.org/geo/1.0/direct?q=\(queryEncoded)&limit=5&appid=\(weatherAPIKey)"
-        guard let url = URL(string: urlString) else { throw URLError(.badURL) }
+        guard let url = URL(string: urlString) else {
+            throw URLError(.badURL)
+        }
 
         let (data, _) = try await URLSession.shared.data(from: url)
         let cityResponses = try JSONDecoder().decode([CityResponse].self, from: data)
@@ -26,10 +28,13 @@ extension APIService {
 
     func fetchWeather(lat: Double, lon: Double) async throws -> Weather {
         let urlString = "https://api.openweathermap.org/data/2.5/weather?lat=\(lat)&lon=\(lon)&appid=\(weatherAPIKey)&units=metric"
-        guard let url = URL(string: urlString) else { throw URLError(.badURL) }
+        guard let url = URL(string: urlString) else {
+            throw URLError(.badURL)
+        }
 
         let (data, _) = try await URLSession.shared.data(from: url)
         let weatherResponse = try JSONDecoder().decode(WeatherResponse.self, from: data)
+        
         return Weather(
             cityName: weatherResponse.name,
             temperature: weatherResponse.main.temp,

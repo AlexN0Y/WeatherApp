@@ -18,10 +18,6 @@ extension FavoritesService {
         persistenceController.loadFavoriteCities()
     }
     
-    func saveFavoriteCities(_ cities: [City]) {
-        persistenceController.saveFavoriteCities(cities)
-    }
-    
     func addCityToFavorites(_ city: City) {
         var favoriteCities = loadFavoriteCities()
         if !favoriteCities.contains(city) {
@@ -38,5 +34,12 @@ extension FavoritesService {
     
     func isCityFavorite(_ city: City) -> Bool {
         loadFavoriteCities().contains(city)
+    }
+}
+
+private extension FavoritesService {
+    
+    func saveFavoriteCities(_ cities: [City]) {
+        persistenceController.saveFavoriteCities(cities)
     }
 }

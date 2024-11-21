@@ -11,12 +11,13 @@ import Combine
 @MainActor
 final class ContentViewModel: ObservableObject {
     
-    @Published var popularCities = MockedCities.allCases.map { $0.city }
-    @Published var favoriteCities = [City]()
     @Published var searchQuery = ""
-    @Published var searchResults = [City]()
-    @Published var isLoading = false
-    @Published var errorMessage: String?
+    
+    @Published private(set) var popularCities = MockedCities.allCases.map { $0.city }
+    @Published private(set) var favoriteCities = [City]()
+    @Published private(set) var searchResults = [City]()
+    @Published private(set) var isLoading = false
+    @Published private(set) var errorMessage: String?
     
     private var cancellables = Set<AnyCancellable>()
     private let apiService = APIService()

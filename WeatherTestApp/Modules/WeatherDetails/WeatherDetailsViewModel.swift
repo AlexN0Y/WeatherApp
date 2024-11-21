@@ -10,9 +10,9 @@ import SwiftUI
 @MainActor
 final class WeatherDetailsViewModel: ObservableObject {
     
-    @Published var weather: Weather?
-    @Published var catImage: UIImage?
-    @Published var isFavorite: Bool = false
+    @Published private(set) var weather: Weather?
+    @Published private(set) var catImage: UIImage?
+    @Published private(set) var isFavorite: Bool = false
     
     var favoriteButtonText: String {
         isFavorite ? "Remove from Favorites" : "Add to Favorites"
@@ -27,7 +27,10 @@ final class WeatherDetailsViewModel: ObservableObject {
         self.city = city
         self.isFavorite = favoritesService.isCityFavorite(city)
     }
+}
 
+extension WeatherDetailsViewModel {
+    
     func fetchWeatherAndCatImage() async {
         do {
             weather = try await apiService.fetchWeather(lat: city.latitude, lon: city.longitude)
@@ -37,7 +40,17 @@ final class WeatherDetailsViewModel: ObservableObject {
         }
     }
     
-    private func fetchRandomCatImage() async throws {
+    func toggleFavoriteStatus() {
+        isFavorite ? favoritesService.removeCityFromFavorites(city)
+        : favoritesService.addCityToFavorites(city)
+        
+        isFavorite.toggle()
+    }
+}
+
+private extension WeatherDetailsViewModel {
+    
+    func fetchRandomCatImage() async throws {
         let catImage = try await apiService.fetchRandomCatImage()
 
         if let data = catImage.imageData,
@@ -45,12 +58,5 @@ final class WeatherDetailsViewModel: ObservableObject {
             self.catImage = image
             historyService.saveCatImage()
         }
-    }
-
-    func toggleFavoriteStatus() {
-        isFavorite ? favoritesService.removeCityFromFavorites(city)
-        : favoritesService.addCityToFavorites(city)
-        
-        isFavorite.toggle()
     }
 }
