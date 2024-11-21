@@ -65,9 +65,7 @@ extension APIService {
         }
 
         let (imageData, _) = try await URLSession.shared.data(from: imageURL)
-
         catImage.imageData = imageData
-        
         PersistenceController.shared.saveContext()
         
         return catImage
