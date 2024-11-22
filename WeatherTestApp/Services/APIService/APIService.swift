@@ -22,8 +22,8 @@ extension APIService {
         }
 
         let (data, _) = try await URLSession.shared.data(from: url)
-        let cityResponses = try JSONDecoder().decode([CityResponse].self, from: data)
-        return cityResponses.map { City(from: $0) }
+        let cityResponses = try JSONDecoder().decode([City].self, from: data)
+        return cityResponses
     }
 
     func fetchWeather(lat: Double, lon: Double) async throws -> Weather {
@@ -54,20 +54,20 @@ extension APIService {
         let decoder = JSONDecoder()
         let catImageResponse = try decoder.decode(CatImageResponse.self, from: jsonData)
 
-        let context = PersistenceController.shared.managedObjectContext
-        let catImage = CatImage(context: context)
-        catImage.id = catImageResponse._id
-        catImage.viewedAt = Date.now
-
         let imageURLString = "https://cataas.com/cat/\(catImageResponse._id)"
         guard let imageURL = URL(string: imageURLString) else {
             throw URLError(.badURL)
         }
 
         let (imageData, _) = try await URLSession.shared.data(from: imageURL)
+        
+        let context = PersistenceController.shared.managedObjectContext
+        let catImage = CatImage(context: context)
+        
+        catImage.id = catImageResponse._id
+        catImage.viewedAt = Date.now
         catImage.imageData = imageData
         PersistenceController.shared.saveContext()
-        
         return catImage
     }
 }
