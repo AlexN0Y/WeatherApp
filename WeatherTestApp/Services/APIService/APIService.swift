@@ -54,7 +54,7 @@ extension APIService {
         let decoder = JSONDecoder()
         let catImageResponse = try decoder.decode(CatImageResponse.self, from: jsonData)
 
-        let imageURLString = "https://cataas.com/cat/\(catImageResponse._id)"
+        let imageURLString = "https://cataas.com/cat/\(catImageResponse.id)"
         guard let imageURL = URL(string: imageURLString) else {
             throw URLError(.badURL)
         }
@@ -64,7 +64,7 @@ extension APIService {
         let context = PersistenceController.shared.managedObjectContext
         let catImage = CatImage(context: context)
         
-        catImage.id = catImageResponse._id
+        catImage.id = catImageResponse.id
         catImage.viewedAt = Date.now
         catImage.imageData = imageData
         PersistenceController.shared.saveContext()

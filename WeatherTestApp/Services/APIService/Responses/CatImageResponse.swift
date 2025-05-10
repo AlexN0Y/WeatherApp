@@ -9,5 +9,5 @@ import Foundation
 
 struct CatImageResponse: Codable {
     
-    let _id: String
+    let id: String
 }
